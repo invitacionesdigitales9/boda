@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boda Imperial: Edith & Luis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fleur+De+Leah&family=Great+Vibes&family=Montserrat:wght@300;400;600&family=Cinzel:wght@400;700&family=Pinyon+Script&display=swap" rel="stylesheet">
+    <style>
+        /* === ESTILOS BASE Y FONDO GENERAL === */
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            width: 100%;
+            max-width: 100vw; 
+            overflow-x: hidden; 
+            font-family: 'Montserrat', sans-serif; 
+            background-image: url('fondo_espacio.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            text-align: center; 
+            color: #4a4a4a; 
+            -webkit-overflow-scrolling: touch; 
+        }
+        
+        /* === SOBRE RESPONSIVO (MODIFICADO) === */
+        #overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #b59410; display: flex; justify-content: center; align-items: center; 
+            z-index: 2000; transition: 1.2s cubic-bezier(0.4, 0, 0.2, 1); perspective: 1000px; 
+        }
+
+        .sobre { 
+            width: 90%; /* Abarca el ancho en el cel */
+            max-width: 450px; 
+            height: 280px; 
+            background: #fffdf9; /* Color marfil/hueso */
+            position: relative; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4); 
+            border-radius: 4px;
+            /* Textura sutil de papel */
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tapa { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 0; 
+            border-left: 45vw solid transparent; 
+            border-right: 45vw solid transparent; 
+            border-top: 140px solid #a3850d; 
+            transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+            transform-origin: top; z-index: 3; 
+        }
+        
+        @media (min-width: 600px) {
+            .tapa {
+                border-left: 225px solid transparent;
+                border-right: 225px solid transparent;
+            }
+        }
+
+        #overlay.abierto .tapa { transform: rotateX(160deg); z-index: 1; }
+        #overlay.abierto { opacity: 0; visibility: hidden; transform: scale(1.1) translateY(-20px); }
+        
+        /* SELLO DE LACRE 3D INTERACTIVO */
+        .sello-lacre-oro { 
+            position: absolute; 
+            top: 140px; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            width: 85px; 
+            height: 85px; 
+            background: radial-gradient(circle, #f0d98c 0%, #b59410 70%, #8b6d05 100%); 
+            border-radius: 50%; 
+            box-shadow: inset 2px 2px 4px rgba(255,255,255,0.4), 0 5px 15px rgba(0,0,0,0.3); 
+            z-index: 10; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            font-family: 'Cinzel', serif; 
+            color: white; 
+            cursor: pointer;
+            border: 2px solid #fffdf9;
+            transition: 0.3s;
+        }
+
+        .sello-lacre-oro:active { transform: translate(-50%, -50%) scale(0.9); }
+
+        /* === CABECERA === */
+        .header-negro { background-color: #111; padding: 15px 20px; color: #e6b001; width: 100%; box-sizing: border-box; }
+        .header-negro h1 { font-family: 'Fleur De Leah', cursive !important; font-size: 4.8rem; margin: 0; line-height: 1; font-weight: 400; }
+        .header-negro p { font-family: 'Cinzel', serif; letter-spacing: 6px; font-size: 0.85rem; margin: 10px 0 0; color: #fff; font-weight: 400; }
+
+        /* === HERO Y RELOJ === */
+        .hero-container { position: relative; width: 100%; height: 95vh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; }
+        .foto-pareja-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('foto.jpg') center/cover no-repeat; z-index: 1; }
+        .hero-content { position: relative; z-index: 2; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); width: 90%; }
+        .fecha-hero { font-family: 'Cinzel', serif; font-size: 2.6rem; letter-spacing: 7px; margin-bottom: 40px; }
+        .reloj-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 500px; margin: 0 auto; }
+        .tiempo-unidad { font-size: 3rem; font-weight: 600; color: #fff; display: block; line-height: 1; }
+        .tiempo-label { font-size: 0.65rem; text-transform: uppercase; color: #eee; letter-spacing: 2px; margin-top: 5px; display: block; }
+
+        /* === SECCIONES === */
+        .seccion-con-fondo { padding: 80px 0; background-size: cover; background-position: center; width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .seccion { padding: 60px 20px; width: 90%; max-width: 700px; box-sizing: border-box; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin: 20px auto; }
+        .frase-romantica { font-style: italic; font-size: 1.4rem; color: #b59410; margin-bottom: 40px; font-family: 'Pinyon Script', cursive; }
+        .titulo-oro { color: #b59410; letter-spacing: 4px; font-weight: 600; text-transform: uppercase; margin-bottom: 20px; font-family: 'Cinzel', serif; }
+        .vestimenta-img { width: 45%; border-radius: 10px; margin: 5px; max-width: 150px; }
+        .btn { display: inline-block; width: 85%; padding: 18px; margin: 10px 0; border-radius: 40px; text-decoration: none; font-weight: 600; font-size: 0.9rem; box-sizing: border-box; cursor: pointer; border: none; transition: transform 0.2s; }
+        .btn:active { transform: scale(0.95); }
+        .btn-oro { background: #b59410; color: white; }
+        .btn-whatsapp { background: #25d366; color: white; }
+        .btn-no { background: #e74c3c; color: white; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: 1s ease-out; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .texto-gala-pinyon { font-family: 'Pinyon Script', cursive; font-size: 3.5rem; color: #a3850d; }
+
+        /* === CUADROS DE TEXTO ELEGANTE === */
+        .input-checklist { border: none; border-bottom: 2px solid #b59410; background: transparent; width: 85%; padding: 12px; font-family: 'Montserrat', sans-serif; text-align: center; font-size: 1.1rem; color: #4a4a4a; margin-bottom: 5px; transition: all 0.3s ease; }
+        .input-checklist:focus { outline: none; border-bottom: 2px solid #a3850d; background-color: rgba(181, 148, 16, 0.05); border-radius: 5px 5px 0 0; }
+        .fila-pase { margin-bottom: 20px; display: flex; align-items: center; justify-content: center; width: 100%; }
+
+        /* === NUEVO CUADRO DE CONSIDERACIONES (SOLO ADULTOS) === */
+        .banner-consideraciones {
+            background-color: #f7f1e3; 
+            border: 2px solid #d1b147;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+        }
+        .banner-consideraciones p {
+            margin: 0;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.2rem; 
+            color: #8c1c13; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .cortina-sutil { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); z-index: 1; }
+        .texto-flotante-final-contraste { color: #ffffff !important; position: relative; z-index: 2; text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9); }
+    </style>
+</head>
+<body>
+
+    <div id="overlay">
+        <div class="sobre">
+            <div class="tapa"></div>
+            <div class="sello-lacre-oro" onclick="abrirInvitacion()">
+                <span style="font-size: 0.5rem; letter-spacing: 1px; margin-bottom: 2px; font-weight: normal;">ABRIR</span>
+                <span style="font-size: 1.3rem; font-weight: bold;">E&L</span>
+            </div>
+        </div>
+    </div>
+
+    <audio id="musica" loop><source src="musica.mp3" type="audio/mpeg"></audio>
+
+    <div class="header-negro">
+        <h1>Edith & Luis</h1>
+        <p>NUESTRA BODA</p>
+    </div>
+
+    <div class="hero-container">
+        <div class="foto-pareja-bg"></div>
+        <div class="hero-content">
+            <div class="fecha-hero">26 • JUNIO • 2026</div>
+            <div id="reloj" class="reloj-grid">
+                <div><span class="tiempo-unidad" id="dias">00</span><span class="tiempo-label">Días</span></div>
+                <div><span class="tiempo-unidad" id="horas">00</span><span class="tiempo-label">Hrs</span></div>
+                <div><span class="tiempo-unidad" id="mins">00</span><span class="tiempo-label">Min</span></div>
+                <div><span class="tiempo-unidad" id="segs">00</span><span class="tiempo-label">Seg</span></div>
+            </div>
+            <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Boda%20Edith%20%26%20Luis&dates=20260626T210000/20260627T030000" target="_blank" style="display: inline-block; margin-top: 20px; color: white; text-decoration: none; font-family: 'Cinzel', serif; font-size: 0.8rem; border: 1px solid white; padding: 10px 20px;">🗓️ AGENDAR EN CALENDARIO</a>
+        </div>
+    </div>
+
+    <div class="seccion-con-fondo" style="background-image: url('TU_FONDO_HISTORIA.jpg');">
+        <div class="seccion reveal">
+            <p class="frase-romantica">"El amor nos unió, ahora queremos compartirlo contigo"</p>
+            <hr style="border: 0; height: 1px; background: #b59410; margin-bottom: 20px;">
+            <p class="texto-gala-pinyon">Nuestra Historia</p>
+            <p style="line-height: 1.8;">Después de compartir tantos momentos maravillosos, hemos decidido dar el paso más importante de nuestras vidas. Queremos que seas testigo del inicio de esta nueva y emocionante etapa.</p>
+        </div>
+    </div>
+
+    <div class="seccion-con-fondo" style="background-image: url('TU_FONDO_PADRES.jpg');">
+        <div class="cortina-sutil"></div>
+        <div class="reveal" style="width: 100%; max-width: 800px; position: relative; z-index: 2;">
+            <p class="texto-gala-pinyon texto-flotante-final-contraste" style="font-size: 3.8rem; margin: 0;">Con la bendición de nuestros padres</p>
+            <div style="display: flex; justify-content: space-around; margin-top: 30px;">
+                <div style="flex: 1;">
+                    <p class="texto-flotante-final-contraste" style="font-family: 'Cinzel', serif; font-weight: bold; font-size: 1.1rem;">Padres de la Novia</p>
+                    <p class="texto-flotante-final-contraste" style="font-size: 1.2rem;">[Nombres de los Padres de Edith]</p>
+                </div>
+                <div style="flex: 1;">
+                    <p class="texto-flotante-final-contraste" style="font-family: 'Cinzel', serif; font-weight: bold; font-size: 1.1rem;">Padres de la Novia</p>
+                    <p class="texto-flotante-final-contraste" style="font-size: 1.2rem;">Luz Maria Gaytan<br> & <br>Jesus Maria Colunga</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="seccion reveal">
+        <img src="copas.png" style="width: 300px; filter: sepia(1);">
+        <h2 class="titulo-oro">Recepción</h2>
+        <p><strong>Hacienda El Secreto</strong><br>9:00 PM</p>
+        <p>Los Pastores 588, Torrecillas, Saltillo, Coahuila.</p>
+        <a href="https://share.google/o4XJiZCWYIiY6kyZC" target="_blank" class="btn btn-oro">📍 VER EN GOOGLE MAPS</a>
+    </div>
+
+    <div class="seccion reveal" style="background-color: #e9dbb4;">
+        <h2 class="titulo-oro">Código de Vestimenta</h2>
+        <p><strong>Formal, Cóctel</strong></p>
+        <p style="font-size: 0.8rem; letter-spacing: 2px;">POR FAVOR, EVITAR EL COLOR BLANCO</p>
+        <div style="margin-top: 20px;">
+            <img src="ejemplo_hombre.jpg" class="vestimenta-img"><img src="ejemplo_mujer.jpg" class="vestimenta-img">
+        </div>
+    </div>
+
+    <div class="seccion reveal">
+        <p class="texto-gala-pinyon">RSVP</p>
+
+        <div class="banner-consideraciones" style="background-color: #fffdf9; border: 1px double #d1b147; padding: 25px; margin-bottom: 30px; border-radius: 8px;">
+            <h3 style="font-family: 'Cinzel', serif; color: #b59410; letter-spacing: 3px; margin-bottom: 15px; font-size: 1.1rem; text-transform: uppercase;">Consideraciones</h3>
+            <div style="font-size: 1.2rem; color: #000; margin-bottom: 8px;">♥</div>
+            <p style="font-family: 'Pinyon Script', cursive; font-size: 2.2rem; color: #a3850d; margin: 0; text-transform: none; line-height: 1;">Con respeto...</p>
+            <p style="font-family: 'Cinzel', serif; font-size: 0.9rem; color: #111; line-height: 1.6; margin-top: 15px; letter-spacing: 1px; font-weight: 600;">
+                AUNQUE APRECIAMOS A SUS PEQUEÑOS,<br>
+                HEMOS DECIDIDO CELEBRAR ESTE<br>
+                MOMENTO SIN NIÑOS.
+            </p>
+        </div>
+
+        <h2 class="titulo-oro" id="display-familia">Confirmación</h2>
+        
+        <div id="lista-pases" style="text-align: left; max-width: 400px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 15px; border: 1px solid #e9dbb4; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <p id="contador-pases-texto" style="margin-top: 0; font-weight: bold; color: #a3850d; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 15px; font-size: 1.1rem;"></p>
+            <p style="font-size: 0.9rem; color: #666; text-align: center; margin-bottom: 20px; font-family: 'Montserrat', sans-serif;">Por favor, escribe el nombre completo de los asistentes:</p>
+            
+            <div id="contenedor-dinamico-pases">
+                </div>
+        </div>
+
+        <div id="confirmacion-container" style="display: flex; flex-direction: column; gap: 10px; align-items: center; margin-top: 25px;">
+            <button onclick="procesarConfirmacion('SÍ')" class="btn btn-whatsapp">
+                ✅ CONFIRMAR ASISTENCIA
+            </button>
+            <button onclick="procesarConfirmacion('NO')" class="btn btn-no">
+                ❌ LO SIENTO, NO PODREMOS IR
+            </button>
+        </div>
+        <p id="mensaje-respuesta" style="display:none; color: #b59410; font-weight: bold; margin-top: 20px; font-family: 'Cinzel', serif; font-size: 1.2rem;">
+            ¡Gracias! Tu respuesta ha sido registrada.
+        </p>
+    </div>
+
+    <div style="padding: 40px; color: #999; font-size: 0.8rem;">
+        <p style="font-family: 'Cinzel', serif; letter-spacing: 3px;">E & L</p>
+        <p>Hacienda El Secreto | Saltillo, Coah.</p>
+    </div>
+
+    <script>
+        // LÓGICA DE PASES DINÁMICOS AL CARGAR LA PÁGINA
+        const urlParams = new URLSearchParams(window.location.search);
+        const familiaNombre = urlParams.get('n') || "Invitado";
+        const numPases = parseInt(urlParams.get('p')) || 2; 
+
+        document.getElementById('display-familia').innerText = "Familia " + familiaNombre.replace(/_/g, " ");
+        document.getElementById('contador-pases-texto').innerText = "Número de pases: " + numPases;
+
+        const contenedor = document.getElementById('contenedor-dinamico-pases');
+        for (let i = 1; i <= numPases; i++) {
+            contenedor.innerHTML += `
+                <div class="fila-pase">
+                    <input type="text" id="nombre${i}" class="input-checklist" placeholder="Invitado ${i}">
+                </div>`;
+        }
+
+        function abrirInvitacion() {
+            document.getElementById('overlay').classList.add('abierto');
+            document.getElementById('musica').play().catch(e => console.log("Audio listo"));
+        }
+
+        const fechaBoda = new Date(2026, 5, 26, 21, 0, 0).getTime(); 
+        setInterval(function() {
+            const ahora = new Date().getTime();
+            const d = fechaBoda - ahora;
+            document.getElementById("dias").innerHTML = Math.floor(d / (1000 * 60 * 60 * 24));
+            document.getElementById("horas").innerHTML = Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById("mins").innerHTML = Math.floor((d % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById("segs").innerHTML = Math.floor((d % (1000 * 60)) / 1000);
+        }, 1000);
+
+        window.addEventListener('scroll', function() {
+            document.querySelectorAll('.reveal').forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight - 100) el.classList.add('visible');
+            });
+        });
+
+        function procesarConfirmacion(status) {
+            let datosFinales = "";
+            if (status === 'SÍ') {
+                let asistiran = [];
+                for (let i = 1; i <= numPases; i++) {
+                    let nombreValue = document.getElementById('nombre' + i).value.trim();
+                    if (nombreValue !== "") asistiran.push(nombreValue);
+                }
+                if (asistiran.length === 0) {
+                    alert("Por favor escribe el nombre de al menos una persona que asistirá.");
+                    return;
+                }
+                datosFinales = familiaNombre + " (" + numPases + " pases): " + asistiran.join(", ");
+            } else {
+                datosFinales = familiaNombre + " (Inasistencia total)";
+            }
+            ejecutarEnvio(datosFinales, status);
+        }
+
+        function ejecutarEnvio(nombreData, respuesta) {
+            const urlAppScript = "https://script.google.com/macros/s/AKfycbyYXENVQ7rbbITRPUpsC6pjhZcN6KHYIWdaxDePzx9BDI4_cM05G4107i27jUSSSliw/exec";
+            fetch(urlAppScript + "?asistencia=" + respuesta + "&nombre=" + encodeURIComponent(nombreData), { 
+                method: "GET",
+                mode: 'no-cors' 
+            })
+            .then(() => {
+                document.querySelector('.banner-consideraciones').style.display = 'none';
+                document.getElementById('lista-pases').style.display = 'none';
+                document.getElementById('confirmacion-container').style.display = 'none';
+                document.getElementById('mensaje-respuesta').style.display = 'block';
+            })
+            .catch(err => {
+                console.log("Error:", err);
+                document.getElementById('mensaje-respuesta').innerText = "Respuesta enviada.";
+                document.getElementById('mensaje-respuesta').style.display = 'block';
+            });
+        }
+    </script>
+</body>
+</html>
